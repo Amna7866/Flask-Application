@@ -1,8 +1,10 @@
 import os
 from flask import Flask, request  
 from flask_smorest import Api
+
 from db import db 
-import models  
+
+import models    
 from resources.item import blp as ItemBlueprint
 from resources.store import blp as StoreBlueprint 
 
@@ -10,7 +12,7 @@ from resources.store import blp as StoreBlueprint
 def create_app(db_url=None):
     app = Flask(__name__) 
 
-    app.config["PROPOGATE_EXCEPTIONS"] = True 
+    app.config["PROPAGATE_EXCEPTIONS"] = True 
     app.config["API_TITLE"] = "Stores REST API" 
     app.config["API_VERSION"] = "v1"
     app.config["OPENAPI_VERSION"] = "3.0.3" 
@@ -31,5 +33,5 @@ def create_app(db_url=None):
     api.register_blueprint(ItemBlueprint) 
     api.register_blueprint(StoreBlueprint)
 
-    return app  
+    return app       
 
