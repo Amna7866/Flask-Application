@@ -3,11 +3,13 @@ import secrets
 from flask import Flask, request  
 from flask_smorest import Api
 from flask_jwt_extended import JWTManager
-from flask import Flask, jsonify  
+from flask import Flask, jsonify 
+from flask_migrate import Migrate 
+
 
 from blocklist import BLOCKLIST 
 
-from db import db 
+from db import db  
 
 import models    
 from resources.user import blp as UserBlueprint 
@@ -30,6 +32,7 @@ def create_app(db_url=None):
     app.config["SQLALCHEMY_DATABASE_URI"] =db_url or os.getenv("DATABASE_URL", "sqlite:///data.db") 
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.init_app(app) 
+    migrate = Migrate(app, db) 
 
     api = Api(app)
 
@@ -51,7 +54,7 @@ def create_app(db_url=None):
     
     @jwt.needs_fresh_token_loader
     def token_not_fresh_callback(jwt_header, jwt_payload):
-        return (
+        return ( 
             jsonify(
                 {
                 "description": "The token is not fresh.",
@@ -98,11 +101,6 @@ def create_app(db_url=None):
 
 
 
-
-
-    with app.app_context():
-        db.create_all()     #@app.before_first_request
-                            #def create_tables(): 
 
 
     api.register_blueprint(ItemBlueprint) 
